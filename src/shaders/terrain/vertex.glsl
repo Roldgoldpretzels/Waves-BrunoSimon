@@ -140,44 +140,43 @@ float cnoise(vec4 P){
 
 varying float vElevation;
 
-float getElevation(vec3 _position)
-{
-  float elevation = 0.0;
+// float getElevation(vec3 _position)
+// {
+//   float elevation = 0.0;
 
-  //General elevations
-  elevation += cnoise(vec4(
-    _position.x * .3,
-    _position.z * .3,
-    0.0,
-    0.0
-   )) * 0.5;
+//   //General elevations
+//   elevation += cnoise(vec4(
+//     _position.x * .3,
+//     _position.z * .3,
+//     0.0,
+//     0.0
+//    )) * 0.5;
 
-//Smaller Details
-  elevation += cnoise(vec4(
-  (_position.x+123.0) * 1.0,
-  (_position.z+123.0) * 1.0,
-  0.0,
-  0.0
-  )) * 0.2;
+// //Smaller Details
+//   elevation += cnoise(vec4(
+//   (_position.x+123.0) * 1.0,
+//   (_position.z+123.0) * 1.0,
+//   0.0,
+//   0.0
+//   )) * 0.2;
 
-  elevation *=2.0;
-  return elevation;
+//   return elevation;
 
-}
+// }
 
 void main()
 {
   vec4 modelPosition = modelMatrix * vec4(position, 1.0);
 
 
-  float elevation = getElevation(modelPosition.xyz);
-  //Working
-  // float elevation = cnoise(vec4(
-  //   modelPosition.x,
-  //   modelPosition.z,
-  //   0.0,
-  //   0.0
-  // ));
+  // float elevation = getElevation(modelPosition.xyz);
+  // Working
+  float elevation = cnoise(vec4(
+    modelPosition.x,
+    modelPosition.z,
+    0.0,
+    0.0
+  ));
 
   modelPosition.y += elevation;
 
@@ -187,21 +186,3 @@ void main()
 
   vElevation = elevation;
 }
-
-// float getElevation(vec3 _position)
-// {
-//   float elevation = 0.0;
-//   float iterations = 4.0;
-//   for(float i =0.0; i< iterations; i++)
-//   {
-//       float frequency = i;
-//       float amplitude = i / itterations;
-//       elevation += cnoise(vec4(
-//         _position.x * frequency,
-//         _position.z * frequency,
-//         0.0,
-//         0.0
-//       )) * amplitude;
-//   }
-//   return elevation;
-// }
