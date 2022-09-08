@@ -63,9 +63,30 @@ controls.enableDamping = true
  * Terrain
  */
 
-//Geometry 
 const terrain = {}
-terrain.geometry = new THREE.PlaneGeometry(1, 1, 100, 100)
+
+terrain.texture = {}
+terrain.texture.width = 32
+terrain.texture.height = 128
+terrain.texture.canvas = document.createElement('canvas')
+terrain.texture.canvas.width = terrain.texture.width
+terrain.texture.canvas.height = terrain.texture.height
+terrain.texture.canvas.style.position = 'fixed'
+terrain.texture.canvas.style.top = 0
+terrain.texture.canvas.style.left = 0
+terrain.texture.canvas.style.zIndex = 1
+document.body.append(terrain.texture.canvas)
+
+terrain.texture.context= terrain.texture.canvas.getContext('2d')
+terrain.texture.context.fillStyle = 'red'
+terrain.texture.context.fillRect(0,0, terrain.texture.width, terrain.texture.height)
+
+terrain.texture.instance = new THREE.CanvasTexture(terrain.texture.canvas)
+
+
+
+//Geometry 
+terrain.geometry = new THREE.PlaneGeometry(1, 1, 1000,1000)
 terrain.geometry.rotateX(-Math.PI * 0.5)
 
 //Material
@@ -74,7 +95,12 @@ terrain.material = new THREE.ShaderMaterial({
     blending: THREE.AdditiveBlending,
     side:THREE.DoubleSide,
     vertexShader: terrainVertexShader,
-    fragmentShader: terrainFragmentShader
+    fragmentShader: terrainFragmentShader,
+    uniforms:
+    {
+        uTexture:{value: terrain.texture.instance},
+        uElevation: {value:2}
+    }
 })
 
 //Mesh
