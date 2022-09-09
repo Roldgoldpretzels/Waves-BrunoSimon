@@ -138,46 +138,46 @@ float cnoise(vec4 P){
   return 2.2 * n_xyzw;
 }
 
+uniform float uElevation;
+uniform float uTime;
+
 varying float vElevation;
+varying vec2 vUv;
 
-// float getElevation(vec3 _position)
-// {
-//   float elevation = 0.0;
+float getElevation(vec3 _position)
+{
+  float elevation = 0.0;
 
-//   //General elevations
-//   elevation += cnoise(vec4(
-//     _position.x * .3,
-//     _position.z * .3,
-//     0.0,
-//     0.0
-//    )) * 0.5;
+  //position
+  vec3 position = _position;
+  position.x += uTime*0.1;
+  position.z += uTime*0.0;
 
-// //Smaller Details
-//   elevation += cnoise(vec4(
-//   (_position.x+123.0) * 1.0,
-//   (_position.z+123.0) * 1.0,
-//   0.0,
-//   0.0
-//   )) * 0.2;
 
-//   return elevation;
+  //General elevations
+  elevation += cnoise(vec4(
+    (position*0.2) * 0.2+1.0,
+    0.0
+   ))*.1;
 
-// }
+//Smaller Details
+  elevation += cnoise(vec4(
+  (position*0.2+125.0) * 2.0,
+  0.0
+  )) * 1.0;
+  float uElevation = 1.0;
+  elevation *= uElevation;
+  return elevation;
+
+}
 
 void main()
 {
   vec4 modelPosition = modelMatrix * vec4(position, 1.0);
 
 
-  // float elevation = getElevation(modelPosition.xyz);
-  // Working
-  float elevation = cnoise(vec4(
-    modelPosition.x,
-    modelPosition.z,
-    0.0,
-    0.0
-  ));
-
+  float elevation = getElevation(modelPosition.xyz);
+  
   modelPosition.y += elevation;
 
   vec4 viewPosition = viewMatrix * modelPosition;
@@ -185,4 +185,5 @@ void main()
   gl_Position = projectionPosition;
 
   vElevation = elevation;
+  vUv = uv;
 }
